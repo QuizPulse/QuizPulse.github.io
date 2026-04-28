@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Middlemarch Quiz · QuizPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:             #f5f0e8;
+      --surface:        #ffffff;
+      --primary:        #5c3317;
+      --primary-hover:  #3e2210;
+      --gold:           #8b6914;
+      --text:           #1a1008;
+      --text-soft:      #6b5240;
+      --border:         #d9cebe;
+      --correct-bg:     #e8f5e9;
+      --correct-border: #2e7d32;
+      --correct-text:   #1b5e20;
+      --wrong-bg:       #ffebee;
+      --wrong-border:   #c62828;
+      --wrong-text:     #b71c1c;
+    }
+
+    body {
+      font-family: 'Crimson Text', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .screen { display: none; width: 100%; max-width: 600px; }
+    .screen.active { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+
+    /* ── Start screen ── */
+    .cover {
+      width: 210px;
+      background: var(--primary);
+      color: var(--bg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-bottom: 6px solid var(--gold);
+      box-shadow: 7px 7px 0 var(--gold);
+    }
+    .cover-ornament { color: var(--gold); font-size: 0.85rem; letter-spacing: 0.4em; }
+    .cover h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.8rem;
+      line-height: 1.2;
+      margin: 0.5rem 0 0.3rem;
+    }
+    .cover-sub  { font-size: 0.75rem; font-style: italic; color: #c8a87a; margin: 0.2rem 0; }
+    .cover-author { font-size: 0.8rem; color: var(--gold); margin-top: 0.5rem; letter-spacing: 0.05em; }
+
+    .intro {
+      text-align: center;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      background: var(--primary);
+      color: var(--bg);
+      border: none;
+      padding: 0.8rem 2.8rem;
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.07em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-hover); }
+
+    /* ── Quiz header ── */
+    .quiz-header { width: 100%; }
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      margin-bottom: 0.45rem;
+    }
+    .progress-bar {
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* ── Cards ── */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      padding: 2rem;
+      box-shadow: 0 1px 10px rgba(26,16,8,.09);
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .opt {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.4;
+      transition: border-color .15s, background .15s;
+    }
+    .opt:hover:not(:disabled) { border-color: var(--primary); background: #ede7dd; }
+    .opt.correct { background: var(--correct-bg); border-color: var(--correct-border); color: var(--correct-text); }
+    .opt.wrong   { background: var(--wrong-bg);   border-color: var(--wrong-border);   color: var(--wrong-text); }
+    .opt:disabled { cursor: default; }
+
+    /* ── Feedback ── */
+    .feedback {
+      width: 100%;
+      background: var(--surface);
+      padding: 1.25rem 2rem;
+      box-shadow: 0 1px 10px rgba(26,16,8,.09);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: center;
+    }
+    .feedback.hidden { display: none; }
+
+    .verdict {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem;
+    }
+    .verdict.ok  { color: var(--correct-text); }
+    .verdict.bad { color: var(--wrong-text); }
+
+    .expl {
+      font-style: italic;
+      color: var(--text-soft);
+      font-size: 0.97rem;
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    /* ── Results ── */
+    .results-card {
+      width: 100%;
+      background: var(--surface);
+      padding: 3rem 2.5rem;
+      box-shadow: 0 1px 10px rgba(26,16,8,.09);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+    .results-ornament { color: var(--gold); font-size: 1rem; letter-spacing: 0.4em; }
+    .results-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.7rem;
+    }
+    .score-pct {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 4.5rem;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .score-fraction { color: var(--text-soft); font-size: 1rem; }
+    .score-msg {
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.7;
+      max-width: 440px;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Start -->
+  <div id="screen-start" class="screen active">
+    <div class="cover">
+      <div class="cover-ornament">— ✦ —</div>
+      <h1>Middle&shy;march</h1>
+      <p class="cover-sub">A Study of Provincial Life</p>
+      <p class="cover-author">George Eliot</p>
+      <div class="cover-ornament">— ✦ —</div>
+    </div>
+    <p class="intro">
+      Test your knowledge of this Victorian masterpiece —<br>
+      characters, plot, themes, and more.
+    </p>
+    <button id="btn-start" class="btn">Begin Quiz</button>
+  </div>
+
+  <!-- Question -->
+  <div id="screen-question" class="screen">
+    <div class="quiz-header">
+      <div class="quiz-meta">
+        <span id="q-counter">Question 1 of 15</span>
+        <span id="score-label">Score: 0</span>
+      </div>
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p id="question-text" class="question-text"></p>
+      <div class="options" id="options">
+        <button class="opt" data-idx="0"></button>
+        <button class="opt" data-idx="1"></button>
+        <button class="opt" data-idx="2"></button>
+        <button class="opt" data-idx="3"></button>
+      </div>
+    </div>
+
+    <div id="feedback" class="feedback hidden">
+      <p id="verdict" class="verdict"></p>
+      <p id="expl" class="expl"></p>
+      <button id="btn-next" class="btn">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="screen-results" class="screen">
+    <div class="results-card">
+      <div class="results-ornament">— ✦ —</div>
+      <h2 class="results-title">Quiz Complete</h2>
+      <div id="score-pct" class="score-pct"></div>
+      <p id="score-fraction" class="score-fraction"></p>
+      <p id="score-msg" class="score-msg"></p>
+      <button id="btn-restart" class="btn" style="margin-top:.5rem">Try Again</button>
+    </div>
+  </div>
+
+  <script src="./bootstrap.js"></script>
+</body>
+</html>
