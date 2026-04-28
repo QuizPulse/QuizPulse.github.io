@@ -1,10 +1,69 @@
-import { Quiz } from "../pkg/quizpulse.js";
+import { Quiz, novel_count, novel_name, novel_author } from "../pkg/quizpulse.js";
 
-let quiz = null;
+// Visual metadata per novel (index matches NOVELS order in Rust)
+const NOVEL_META = [
+  { subtitle: "A Study of Provincial Life", coverBg: "#5c3317", accentColor: "#c8a050", boxShadow: "#8b6914" },
+  { subtitle: "A Novel",                     coverBg: "#1a2e4a", accentColor: "#c8a050", boxShadow: "#4a6a8a" },
+];
+
+const GRADING = [
+  [100, "A perfect score. You know this novel inside out."],
+  [80,  "Excellent — a thoroughly well-read performance."],
+  [60,  "A solid effort, though a few pages may deserve a second reading."],
+  [40,  "Not bad — the novel rewards closer attention on the next round."],
+  [0,   "Time to open the book and discover what you missed!"],
+];
+
+let quiz     = null;
+let novelIdx = 0;
+
+// ── Screens ──────────────────────────────────────────────────────────────────
 
 function show(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+}
+
+// ── Novel selection ───────────────────────────────────────────────────────────
+
+function buildBookGrid() {
+  const grid = document.getElementById("book-grid");
+  const count = novel_count();
+
+  for (let i = 0; i < count; i++) {
+    const meta   = NOVEL_META[i] || { subtitle: "", coverBg: "#2c1d0e", accentColor: "#c8a050", boxShadow: "#8b6914" };
+    const name   = novel_name(i);
+    const author = novel_author(i);
+
+    const btn = document.createElement("button");
+    btn.className = "book-btn";
+    btn.dataset.novel = i;
+    btn.innerHTML = `
+      <div class="cover" style="
+        background: ${meta.coverBg};
+        border-bottom: 5px solid ${meta.accentColor};
+        box-shadow: 6px 6px 0 ${meta.boxShadow};
+      ">
+        <div class="cover-ornament" style="color:${meta.accentColor}">— ✦ —</div>
+        <h2>${name}</h2>
+        <p class="cover-sub">${meta.subtitle}</p>
+        <p class="cover-author">${author}</p>
+        <div class="cover-ornament" style="color:${meta.accentColor}">— ✦ —</div>
+      </div>
+      <p class="book-meta">15 questions</p>
+    `;
+    btn.addEventListener("click", () => startQuiz(i));
+    grid.appendChild(btn);
+  }
+}
+
+// ── Quiz ──────────────────────────────────────────────────────────────────────
+
+function startQuiz(idx) {
+  novelIdx = idx;
+  quiz = Quiz.create(idx, Date.now() & 0xFFFFFFFF);
+  renderQuestion();
+  show("screen-question");
 }
 
 function renderQuestion() {
@@ -51,27 +110,15 @@ function showResults() {
   const total = quiz.total();
   const pct   = Math.round((score / total) * 100);
 
+  document.getElementById("results-novel").textContent  = novel_name(novelIdx);
   document.getElementById("score-pct").textContent      = pct + "%";
   document.getElementById("score-fraction").textContent = `${score} out of ${total} correct`;
-
-  const grading = [
-    [100, "\"Her full nature spent itself in channels which had no great name on the earth.\" A perfect score!"],
-    [80,  "Excellent — Dorothea herself would approve of such thorough study."],
-    [60,  "A solid effort. A few more evenings at Lowick Manor would sharpen the rest."],
-    [40,  "Not bad, but the novel rewards closer attention. Time to return to George Eliot!"],
-    [0,   "Time to open Middlemarch and discover one of the greatest novels ever written."],
-  ];
-  document.getElementById("score-msg").textContent =
-    grading.find(([t]) => pct >= t)[1];
+  document.getElementById("score-msg").textContent      = GRADING.find(([t]) => pct >= t)[1];
 
   show("screen-results");
 }
 
-document.getElementById("btn-start").addEventListener("click", () => {
-  quiz = Quiz.create(Date.now() & 0xFFFFFFFF);
-  renderQuestion();
-  show("screen-question");
-});
+// ── Event listeners ───────────────────────────────────────────────────────────
 
 document.querySelectorAll(".opt").forEach(btn => {
   btn.addEventListener("click", () => handleAnswer(+btn.dataset.idx));
@@ -82,5 +129,13 @@ document.getElementById("btn-next").addEventListener("click", () => {
 });
 
 document.getElementById("btn-restart").addEventListener("click", () => {
-  show("screen-start");
+  startQuiz(novelIdx);
 });
+
+document.getElementById("btn-choose").addEventListener("click", () => {
+  show("screen-select");
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+buildBookGrid();
