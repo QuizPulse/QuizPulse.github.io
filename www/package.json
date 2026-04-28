@@ -7,7 +7,7 @@
     "create-wasm-app": ".bin/create-wasm-app.js"
   },
   "scripts": {
-    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js --mode production",
     "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server"
   },
   "repository": {
