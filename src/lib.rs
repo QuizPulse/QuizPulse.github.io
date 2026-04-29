@@ -1,6 +1,8 @@
 mod utils;
 use wasm_bindgen::prelude::*;
 
+const QUESTIONS_PER_QUIZ: usize = 10;
+
 struct Question {
     text: &'static str,
     options: [&'static str; 4],
@@ -14,7 +16,7 @@ struct Novel {
     questions: &'static [Question],
 }
 
-// ── Middlemarch ───────────────────────────────────────────────────────────────
+// ── Middlemarch (20 questions) ────────────────────────────────────────────────
 
 static MIDDLEMARCH: &[Question] = &[
     Question {
@@ -137,9 +139,54 @@ static MIDDLEMARCH: &[Question] = &[
         correct: 3,
         explanation: "By marrying Ladislaw, Dorothea triggers Casaubon's punitive codicil and loses the bulk of his fortune.",
     },
+    Question {
+        text: "What is the name of Dorothea's younger sister?",
+        options: ["Clara", "Celia", "Catherine", "Caroline"],
+        correct: 1,
+        explanation: "Celia Brooke is Dorothea's practical, conventional younger sister. She later marries Sir James Chettam.",
+    },
+    Question {
+        text: "What political venture does Mr. Brooke, Dorothea's uncle, attempt?",
+        options: [
+            "Starting a reform newspaper",
+            "Running for Parliament",
+            "Becoming a local magistrate",
+            "Campaigning for prison reform",
+        ],
+        correct: 1,
+        explanation: "Mr. Brooke stands as a parliamentary candidate but is humiliated at a public meeting when the crowd mocks him back with his own words.",
+    },
+    Question {
+        text: "Where do Dorothea and Casaubon spend their honeymoon?",
+        options: ["Paris", "Florence", "Rome", "Venice"],
+        correct: 2,
+        explanation: "They honeymoon in Rome, where Dorothea experiences a profound emotional crisis surrounded by the weight of classical history.",
+    },
+    Question {
+        text: "What is Fred Vincy's great failing at the start of the novel?",
+        options: [
+            "Gambling debts and idleness",
+            "Heavy drinking",
+            "A secret engagement",
+            "Embezzling from his father",
+        ],
+        correct: 0,
+        explanation: "Fred is idle and runs up debts based on an expected inheritance that never materialises, nearly ruining the Garth family who co-sign for him.",
+    },
+    Question {
+        text: "What is distinctive about Will Ladislaw's background?",
+        options: [
+            "He is a French émigré with no English connections",
+            "He served in the army under Wellington",
+            "His grandmother was disinherited by Casaubon's family for marrying a Polish Jew",
+            "He is Casaubon's illegitimate son",
+        ],
+        correct: 2,
+        explanation: "Ladislaw's grandmother was disinherited when she married a Polish Jewish man — a secret Casaubon keeps, and which makes Ladislaw the moral heir to what Dorothea eventually sacrifices.",
+    },
 ];
 
-// ── Anna Karenina ─────────────────────────────────────────────────────────────
+// ── Anna Karenina (20 questions) ──────────────────────────────────────────────
 
 static ANNA_KARENINA: &[Question] = &[
     Question {
@@ -248,7 +295,7 @@ static ANNA_KARENINA: &[Question] = &[
             "He rejects all religion",
         ],
         correct: 2,
-        explanation: "A peasant's offhand remark about 'living for God, not for your belly' triggers a quiet but profound moral awakening in Levin — the novel's hopeful counterweight to Anna's tragedy.",
+        explanation: "A peasant's offhand remark about 'living for God, not for your belly' triggers a quiet but profound moral awakening in Levin.",
     },
     Question {
         text: "Where do Anna and Vronsky go after leaving Russian society?",
@@ -267,31 +314,73 @@ static ANNA_KARENINA: &[Question] = &[
         correct: 0,
         explanation: "Karenin refuses to divorce Anna on religious and social grounds, leaving her trapped — legally his wife but socially an outcast.",
     },
+    Question {
+        text: "What is the name of Anna and Vronsky's daughter?",
+        options: ["Natasha", "Annie", "Sonya", "Masha"],
+        correct: 1,
+        explanation: "Anna and Vronsky have a daughter called Annie; her birth nearly kills Anna and prompts Karenin's unexpected moment of forgiveness.",
+    },
+    Question {
+        text: "Where does Anna first encounter Vronsky?",
+        options: [
+            "At a ball in St. Petersburg",
+            "At a railway station in Moscow",
+            "At Stiva's house in Moscow",
+            "At a country estate in summer",
+        ],
+        correct: 1,
+        explanation: "Anna and Vronsky first meet at a Moscow railway station when she arrives to help reconcile Stiva and Dolly — a fatal encounter foreshadowed by a worker's death on the tracks.",
+    },
+    Question {
+        text: "What does Karenin do unexpectedly when Anna nearly dies giving birth to Vronsky's child?",
+        options: [
+            "He files for immediate divorce",
+            "He forgives Anna and Vronsky",
+            "He sends Vronsky into military exile",
+            "He takes Seryozha away at once",
+        ],
+        correct: 1,
+        explanation: "Believing Anna is dying, Karenin experiences a sudden Christian compassion and forgives both Anna and Vronsky — a grace that leaves Vronsky feeling deeply ashamed.",
+    },
+    Question {
+        text: "What is Anna's emotional state in the final chapters before her death?",
+        options: [
+            "Peaceful and resigned",
+            "Consumed by jealousy and paranoid despair",
+            "Hopeful about reconciling with Karenin",
+            "Focused on securing her children's future",
+        ],
+        correct: 1,
+        explanation: "Anna spirals into jealous paranoia, convinced Vronsky is losing interest and planning to marry another woman — a delusion that drives her to her final act.",
+    },
+    Question {
+        text: "Which character most clearly represents Tolstoy's own spiritual views?",
+        options: ["Count Vronsky", "Konstantin Levin", "Alexei Karenin", "Stepan Oblonsky"],
+        correct: 1,
+        explanation: "Levin is widely seen as the most autobiographical character — his struggles with faith, meaning, death, and agricultural reform mirror Tolstoy's own preoccupations closely.",
+    },
 ];
 
 // ── Novel registry ────────────────────────────────────────────────────────────
 
 static NOVELS: &[Novel] = &[
-    Novel { name: "Middlemarch",    author: "George Eliot", questions: MIDDLEMARCH    },
+    Novel { name: "Middlemarch",   author: "George Eliot", questions: MIDDLEMARCH    },
     Novel { name: "Anna Karenina", author: "Leo Tolstoy",  questions: ANNA_KARENINA  },
 ];
 
-// ── Free functions exported to JS ─────────────────────────────────────────────
+// ── Exports ───────────────────────────────────────────────────────────────────
 
 #[wasm_bindgen]
-pub fn novel_count() -> usize {
-    NOVELS.len()
-}
+pub fn novel_count() -> usize { NOVELS.len() }
 
 #[wasm_bindgen]
-pub fn novel_name(i: usize) -> String {
-    NOVELS[i].name.to_string()
-}
+pub fn novel_name(i: usize) -> String { NOVELS[i].name.to_string() }
 
 #[wasm_bindgen]
-pub fn novel_author(i: usize) -> String {
-    NOVELS[i].author.to_string()
-}
+pub fn novel_author(i: usize) -> String { NOVELS[i].author.to_string() }
+
+#[wasm_bindgen]
+pub fn questions_per_quiz() -> usize { QUESTIONS_PER_QUIZ }
 
 // ── Quiz ──────────────────────────────────────────────────────────────────────
 
@@ -306,6 +395,7 @@ pub struct Quiz {
 
 #[wasm_bindgen]
 impl Quiz {
+    /// Shuffle the full question pool, then keep only QUESTIONS_PER_QUIZ of them.
     pub fn create(novel_idx: usize, seed: u32) -> Quiz {
         let questions = NOVELS[novel_idx].questions;
         let mut order: Vec<usize> = (0..questions.len()).collect();
@@ -317,20 +407,15 @@ impl Quiz {
             let j = (rng >> 33) as usize % (i + 1);
             order.swap(i, j);
         }
+        order.truncate(QUESTIONS_PER_QUIZ);
         Quiz { novel_idx, order, current: 0, score: 0, last_correct: false }
     }
 
-    pub fn total(&self) -> usize {
-        NOVELS[self.novel_idx].questions.len()
-    }
+    pub fn total(&self) -> usize { self.order.len() }
 
-    pub fn current_index(&self) -> usize {
-        self.current
-    }
+    pub fn current_index(&self) -> usize { self.current }
 
-    pub fn is_finished(&self) -> bool {
-        self.current >= self.order.len()
-    }
+    pub fn is_finished(&self) -> bool { self.current >= self.order.len() }
 
     pub fn question_text(&self) -> String {
         if self.is_finished() { return String::new(); }
@@ -351,9 +436,7 @@ impl Quiz {
         correct
     }
 
-    pub fn score(&self) -> usize {
-        self.score
-    }
+    pub fn score(&self) -> usize { self.score }
 
     pub fn explanation(&self) -> String {
         if self.current == 0 { return String::new(); }
@@ -384,14 +467,23 @@ mod tests {
     }
 
     #[test]
-    fn all_novels_have_fifteen_questions() {
+    fn all_novels_have_twenty_questions() {
         for novel in NOVELS {
             assert_eq!(
-                novel.questions.len(),
-                15,
-                "novel '{}' has {} questions, expected 15",
-                novel.name,
-                novel.questions.len()
+                novel.questions.len(), 20,
+                "novel '{}' has {} questions, expected 20",
+                novel.name, novel.questions.len()
+            );
+        }
+    }
+
+    #[test]
+    fn pool_is_larger_than_quiz_size() {
+        for novel in NOVELS {
+            assert!(
+                novel.questions.len() > QUESTIONS_PER_QUIZ,
+                "novel '{}': pool ({}) must exceed quiz size ({})",
+                novel.name, novel.questions.len(), QUESTIONS_PER_QUIZ
             );
         }
     }
@@ -402,7 +494,7 @@ mod tests {
             for (i, q) in novel.questions.iter().enumerate() {
                 assert!(
                     q.correct < 4,
-                    "novel '{}' question {}: correct={} is out of range 0..4",
+                    "novel '{}' question {}: correct={} out of range 0..4",
                     novel.name, i, q.correct
                 );
             }
@@ -423,12 +515,17 @@ mod tests {
     }
 
     #[test]
+    fn quiz_uses_questions_per_quiz_constant() {
+        let quiz = Quiz::create(0, 42);
+        assert_eq!(quiz.total(), QUESTIONS_PER_QUIZ);
+    }
+
+    #[test]
     fn quiz_initial_state() {
         let quiz = Quiz::create(0, 42);
         assert_eq!(quiz.score(), 0);
         assert_eq!(quiz.current_index(), 0);
         assert!(!quiz.is_finished());
-        assert_eq!(quiz.total(), 15);
     }
 
     #[test]
@@ -451,21 +548,21 @@ mod tests {
     #[test]
     fn quiz_finishes_after_all_questions_answered() {
         let mut quiz = Quiz::create(0, 0);
-        for _ in 0..15 {
+        for _ in 0..QUESTIONS_PER_QUIZ {
             quiz.submit_answer(0);
         }
         assert!(quiz.is_finished());
-        assert_eq!(quiz.current_index(), 15);
+        assert_eq!(quiz.current_index(), QUESTIONS_PER_QUIZ);
     }
 
     #[test]
     fn perfect_score_when_every_answer_is_correct() {
         let mut quiz = Quiz::create(1, 7);
-        for i in 0..15 {
+        for i in 0..QUESTIONS_PER_QUIZ {
             let correct_opt = NOVELS[1].questions[quiz.order[i]].correct;
             quiz.submit_answer(correct_opt);
         }
-        assert_eq!(quiz.score(), 15);
+        assert_eq!(quiz.score(), QUESTIONS_PER_QUIZ);
     }
 
     #[test]
@@ -483,26 +580,38 @@ mod tests {
     }
 
     #[test]
-    fn explanation_and_correct_option_reflect_last_answer() {
+    fn different_seeds_yield_different_question_subsets() {
+        // With 20 questions choosing 10, different seeds should often pick different subsets
+        let mut same_count = 0;
+        for seed in 0..20_u32 {
+            let a = Quiz::create(0, seed);
+            let b = Quiz::create(0, seed + 1000);
+            if a.order == b.order { same_count += 1; }
+        }
+        // Allow at most 1 collision out of 20 attempts
+        assert!(same_count <= 1, "too many identical subsets across seeds: {}", same_count);
+    }
+
+    #[test]
+    fn explanation_and_correct_option_reflect_last_answered_question() {
         let mut quiz = Quiz::create(0, 3);
-        let q_idx = quiz.order[0];
+        let q_idx           = quiz.order[0];
         let expected_correct = NOVELS[0].questions[q_idx].correct;
         let expected_expl    = NOVELS[0].questions[q_idx].explanation;
-        quiz.submit_answer(0); // submit any answer
+        quiz.submit_answer(0);
         assert_eq!(quiz.correct_option(), expected_correct);
         assert_eq!(quiz.explanation(), expected_expl);
     }
 
     #[test]
-    fn both_novels_are_quizzable() {
+    fn both_novels_are_quizzable_to_perfect_score() {
         for novel_idx in 0..NOVELS.len() {
             let mut quiz = Quiz::create(novel_idx, 1);
-            assert_eq!(quiz.total(), 15);
-            for i in 0..15 {
+            for i in 0..QUESTIONS_PER_QUIZ {
                 let correct = NOVELS[novel_idx].questions[quiz.order[i]].correct;
                 quiz.submit_answer(correct);
             }
-            assert_eq!(quiz.score(), 15);
+            assert_eq!(quiz.score(), QUESTIONS_PER_QUIZ);
             assert!(quiz.is_finished());
         }
     }

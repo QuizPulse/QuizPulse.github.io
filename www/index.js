@@ -1,4 +1,4 @@
-import { Quiz, novel_count, novel_name, novel_author } from "../pkg/quizpulse.js";
+import { Quiz, novel_count, novel_name, novel_author, questions_per_quiz } from "../pkg/quizpulse.js";
 
 // Visual metadata per novel (index matches NOVELS order in Rust)
 const NOVEL_META = [
@@ -50,7 +50,7 @@ function buildBookGrid() {
         <p class="cover-author">${author}</p>
         <div class="cover-ornament" style="color:${meta.accentColor}">— ✦ —</div>
       </div>
-      <p class="book-meta">15 questions</p>
+      <p class="book-meta">${questions_per_quiz()} questions per play</p>
     `;
     btn.addEventListener("click", () => startQuiz(i));
     grid.appendChild(btn);

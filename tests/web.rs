@@ -5,7 +5,7 @@
 
 extern crate wasm_bindgen_test;
 use wasm_bindgen_test::*;
-use quizpulse::{Quiz, novel_count, novel_name, novel_author};
+use quizpulse::{Quiz, novel_count, novel_name, novel_author, questions_per_quiz};
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -27,10 +27,10 @@ fn novel_authors_are_correct() {
 }
 
 #[wasm_bindgen_test]
-fn quiz_creates_for_both_novels() {
+fn quiz_total_matches_questions_per_quiz() {
     for i in 0..novel_count() {
         let quiz = Quiz::create(i, 42);
-        assert_eq!(quiz.total(), 15);
+        assert_eq!(quiz.total(), questions_per_quiz());
         assert_eq!(quiz.score(), 0);
         assert!(!quiz.is_finished());
     }
@@ -48,7 +48,7 @@ fn question_text_and_options_are_nonempty() {
 #[wasm_bindgen_test]
 fn answering_all_questions_finishes_quiz() {
     let mut quiz = Quiz::create(0, 0);
-    for _ in 0..15 {
+    for _ in 0..questions_per_quiz() {
         quiz.submit_answer(0);
     }
     assert!(quiz.is_finished());
@@ -57,10 +57,10 @@ fn answering_all_questions_finishes_quiz() {
 #[wasm_bindgen_test]
 fn score_does_not_exceed_total() {
     let mut quiz = Quiz::create(1, 7);
-    for _ in 0..15 {
+    for _ in 0..questions_per_quiz() {
         quiz.submit_answer(0);
     }
-    assert!(quiz.score() <= 15);
+    assert!(quiz.score() <= questions_per_quiz());
 }
 
 #[wasm_bindgen_test]
