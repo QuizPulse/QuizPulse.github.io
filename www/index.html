@@ -24,6 +24,7 @@
       --wrong-bg:       #ffebee;
       --wrong-border:   #c62828;
       --wrong-text:     #b71c1c;
+      --bar-h:          42px;
     }
 
     body {
@@ -31,25 +32,70 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      padding-top: var(--bar-h);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      padding-bottom: 2rem;
     }
 
+    /* ── Auth bar ── */
+    #auth-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--bar-h);
+      background: var(--primary);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 1.5rem;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      font-family: 'Crimson Text', Georgia, serif;
+      z-index: 100;
+    }
+    .user-email   { opacity: 0.7; font-style: italic; }
+    .auth-sep     { opacity: 0.3; }
+    .auth-link {
+      background: none;
+      border: none;
+      color: #f5f0e8;
+      cursor: pointer;
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 0.85rem;
+      padding: 0;
+      opacity: 0.85;
+      transition: opacity 0.15s;
+    }
+    .auth-link:hover { opacity: 1; }
+    .auth-link-cta {
+      background: rgba(255,255,255,.15);
+      padding: 0.2rem 0.85rem;
+      opacity: 1;
+    }
+    .auth-link-inline {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: inherit;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    /* ── Screens ── */
     .screen { display: none; width: 100%; max-width: 640px; }
     .screen.active { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
 
     /* ── Novel selection ── */
     .select-header { text-align: center; }
     .brand-ornament { color: var(--gold); font-size: 0.85rem; letter-spacing: 0.4em; margin-bottom: 0.4rem; }
-    .brand {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 2.2rem;
-      color: var(--text);
-      margin-bottom: 0.3rem;
-    }
+    .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; color: var(--text); margin-bottom: 0.3rem; }
     .tagline { font-style: italic; color: var(--text-soft); font-size: 1.05rem; }
 
     .book-grid {
@@ -58,7 +104,6 @@
       gap: 2rem;
       width: 100%;
     }
-
     .book-btn {
       background: none;
       border: none;
@@ -71,7 +116,6 @@
       transition: transform 0.2s;
     }
     .book-btn:hover { transform: translateY(-5px); }
-
     .cover {
       width: 100%;
       padding: 1.8rem 1.2rem;
@@ -79,18 +123,12 @@
       color: #f5f0e8;
     }
     .cover-ornament { font-size: 0.75rem; letter-spacing: 0.4em; opacity: 0.85; }
-    .cover h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.4rem;
-      line-height: 1.2;
-      margin: 0.4rem 0 0.25rem;
-    }
-    .cover-sub  { font-size: 0.7rem; font-style: italic; opacity: 0.75; margin-bottom: 0.2rem; }
+    .cover h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; line-height: 1.2; margin: 0.4rem 0 0.25rem; }
+    .cover-sub    { font-size: 0.7rem; font-style: italic; opacity: 0.75; }
     .cover-author { font-size: 0.9rem; color: #f5f0e8; margin-top: 0.4rem; letter-spacing: 0.07em; }
+    .book-meta    { font-size: 0.82rem; font-style: italic; color: var(--text-soft); }
 
-    .book-meta { font-size: 0.82rem; font-style: italic; color: var(--text-soft); }
-
-    /* ── Shared button ── */
+    /* ── Buttons ── */
     .btn {
       background: var(--primary);
       color: var(--bg);
@@ -102,15 +140,15 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn:hover { background: var(--primary-hover); }
+    .btn:hover         { background: var(--primary-hover); }
+    .btn:disabled      { opacity: 0.6; cursor: default; }
     .btn-outline {
       background: transparent;
       color: var(--primary);
       border: 2px solid var(--primary);
-      padding: 0.7rem 2rem;
+      padding: 0.65rem 1.5rem;
       font-family: 'Crimson Text', Georgia, serif;
       font-size: 1rem;
-      letter-spacing: 0.05em;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
@@ -118,31 +156,14 @@
 
     /* ── Quiz header ── */
     .quiz-header { width: 100%; }
-    .quiz-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: var(--text-soft);
-      margin-bottom: 0.45rem;
-    }
+    .quiz-meta { display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text-soft); margin-bottom: 0.45rem; }
     .progress-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
-    .progress-fill {
-      height: 100%;
-      background: var(--primary);
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
+    .progress-fill { height: 100%; background: var(--primary); border-radius: 3px; transition: width 0.5s ease; }
 
     /* ── Cards ── */
-    .card {
-      width: 100%;
-      background: var(--surface);
-      padding: 2rem;
-      box-shadow: 0 1px 10px rgba(26,16,8,.09);
-    }
+    .card { width: 100%; background: var(--surface); padding: 2rem; box-shadow: 0 1px 10px rgba(26,16,8,.09); }
     .question-text { font-size: 1.2rem; line-height: 1.65; margin-bottom: 1.5rem; }
     .options { display: flex; flex-direction: column; gap: 0.6rem; }
-
     .opt {
       background: var(--bg);
       border: 2px solid var(--border);
@@ -191,12 +212,122 @@
       text-align: center;
     }
     .results-ornament { color: var(--gold); font-size: 0.9rem; letter-spacing: 0.4em; }
-    .results-novel { font-style: italic; color: var(--text-soft); font-size: 0.95rem; }
-    .results-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.7rem; }
-    .score-pct { font-family: 'Playfair Display', Georgia, serif; font-size: 4.5rem; color: var(--primary); line-height: 1; }
-    .score-fraction { color: var(--text-soft); font-size: 1rem; }
-    .score-msg { font-style: italic; color: var(--text-soft); line-height: 1.7; max-width: 440px; font-size: 1rem; }
-    .results-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+    .results-novel    { font-style: italic; color: var(--text-soft); font-size: 0.95rem; }
+    .results-title    { font-family: 'Playfair Display', Georgia, serif; font-size: 1.7rem; }
+    .score-pct        { font-family: 'Playfair Display', Georgia, serif; font-size: 4.5rem; color: var(--primary); line-height: 1; }
+    .score-fraction   { color: var(--text-soft); font-size: 1rem; }
+    .score-msg        { font-style: italic; color: var(--text-soft); line-height: 1.7; max-width: 440px; font-size: 1rem; }
+    .save-status      { font-size: 0.9rem; color: var(--text-soft); font-style: italic; min-height: 1.2em; }
+    .save-status.saved { color: var(--correct-text); font-style: normal; }
+    .results-actions  { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+
+    /* ── History ── */
+    .history-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; }
+    .history-list  { width: 100%; }
+
+    .history-item {
+      background: var(--surface);
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-item:first-child { border-top: 1px solid var(--border); }
+    .history-novel { font-size: 1rem; font-weight: 600; }
+    .history-date  { font-size: 0.8rem; font-style: italic; color: var(--text-soft); margin-top: 0.15rem; }
+    .history-right { text-align: right; flex-shrink: 0; }
+    .history-score { font-size: 1rem; }
+    .pct-badge {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+    .pct-badge.high { background: var(--correct-bg); color: var(--correct-text); }
+    .pct-badge.mid  { background: #fff3cd; color: #856404; }
+    .pct-badge.low  { background: var(--wrong-bg);   color: var(--wrong-text); }
+    .history-empty  {
+      background: var(--surface);
+      text-align: center;
+      font-style: italic;
+      color: var(--text-soft);
+      padding: 3rem 2rem;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Auth modal ── */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,16,8,.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 1rem;
+    }
+    .modal.hidden { display: none; }
+    .modal-box {
+      background: var(--surface);
+      padding: 2rem;
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+      box-shadow: 0 6px 30px rgba(26,16,8,.25);
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.7rem; right: 0.8rem;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: var(--text-soft);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.2rem;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; text-align: center; margin-bottom: 1.25rem; }
+    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
+    .auth-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      padding: 0.45rem;
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 1rem;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .auth-field {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 2px solid var(--border);
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--bg);
+      margin-bottom: 0.7rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .auth-field:focus { border-color: var(--primary); }
+    .auth-error { color: var(--wrong-text); font-size: 0.9rem; margin-bottom: 0.7rem; font-style: italic; }
+    .auth-error.hidden { display: none; }
+    .auth-note  { color: var(--correct-text); font-size: 0.9rem; margin-bottom: 0.7rem; font-style: italic; text-align: center; }
+    .auth-note.hidden { display: none; }
 
     @media (max-width: 480px) {
       .book-grid { grid-template-columns: 1fr; max-width: 240px; }
@@ -205,6 +336,9 @@
 </head>
 <body>
 
+  <!-- Fixed auth bar -->
+  <div id="auth-bar"></div>
+
   <!-- Novel selection -->
   <div id="screen-select" class="screen active">
     <div class="select-header">
@@ -212,16 +346,14 @@
       <h1 class="brand">QuizPulse</h1>
       <p class="tagline">Choose a novel to begin</p>
     </div>
-    <div class="book-grid" id="book-grid">
-      <!-- populated by JS -->
-    </div>
+    <div class="book-grid" id="book-grid"></div>
   </div>
 
   <!-- Question -->
   <div id="screen-question" class="screen">
     <div class="quiz-header">
       <div class="quiz-meta">
-        <span id="q-counter">Question 1 of 15</span>
+        <span id="q-counter">Question 1 of 10</span>
         <span id="score-label">Score: 0</span>
       </div>
       <div class="progress-bar">
@@ -253,10 +385,39 @@
       <div id="score-pct" class="score-pct"></div>
       <p id="score-fraction" class="score-fraction"></p>
       <p id="score-msg" class="score-msg"></p>
+      <p id="save-status" class="save-status"></p>
       <div class="results-actions">
         <button id="btn-restart" class="btn">Try Again</button>
         <button id="btn-choose" class="btn-outline">Choose Another Novel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div id="screen-history" class="screen">
+    <div class="history-header">
+      <h2 class="history-title">Your History</h2>
+      <button id="btn-back-select" class="btn-outline">← Back</button>
+    </div>
+    <div id="history-list" class="history-list"></div>
+  </div>
+
+  <!-- Auth modal -->
+  <div id="auth-modal" class="modal hidden" data-mode="signin">
+    <div class="modal-box">
+      <button id="auth-close" class="modal-close" aria-label="Close">✕</button>
+      <h2 class="modal-title">QuizPulse</h2>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin">Sign In</button>
+        <button class="auth-tab"        data-tab="signup">Sign Up</button>
+      </div>
+      <p id="auth-note"  class="auth-note  hidden"></p>
+      <form id="auth-form" novalidate>
+        <input type="email"    id="auth-email"    class="auth-field" placeholder="Email address"  required autocomplete="email">
+        <input type="password" id="auth-password" class="auth-field" placeholder="Password (min 6 characters)" required autocomplete="current-password" minlength="6">
+        <p id="auth-error" class="auth-error hidden"></p>
+        <button type="submit" id="auth-submit" class="btn" style="width:100%">Sign In</button>
+      </form>
     </div>
   </div>
 
