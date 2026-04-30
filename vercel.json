@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "installCommand": "cd www && npm install",
+  "buildCommand": "bash vercel-build.sh",
+  "outputDirectory": "www/dist"
+}
