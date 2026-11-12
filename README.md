@@ -1,5 +1,9 @@
 # QuizPulse
 
+> **This repository is archived** and is not being developed. It is unrelated to
+> the Quiz Pulse browser extension, which is built from
+> [Goftan](https://github.com/goftan/goftan.github.io).
+
 A Rust + WebAssembly quiz app for classic novels, starting with **Middlemarch** by George Eliot.
 
 Built with [`wasm-pack`](https://github.com/rustwasm/wasm-pack), webpack 5, and vanilla JS.
